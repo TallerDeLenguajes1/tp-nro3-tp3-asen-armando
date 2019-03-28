@@ -1,3 +1,5 @@
+//Comentario de prueba grupo1
+
 enum TRaza{Orco, Humano, Mago, Enano, Elfo}
 char Nombres[6][10]={“ale”, “b”, “c”, “d”, “e”}
 char Apellidos[6][10]={“f”, “g”, “hormiga”, “i”, “j”}
