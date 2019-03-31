@@ -31,9 +31,11 @@ struct TPersonaje{
 //Declarando Funciones creadas
 void cargaCarac(struct TPersonaje* ptrpers);
 void mostrarCarac(struct TPersonaje* ptrpers);
+void visorPers(struct TPersonaje* ptrpers, int cantpers);
+void pelea(struct TPersonaje* ptrpers, int cantpers);
 
 
-//MAIN----------------------------------------------------------------------------------------------
+//MAIN------------------------------------------------------------------------------------------------------
 void main(){
 	struct TPersonaje* ptrpersonaje; 
 	int cant,i,nump;
@@ -63,24 +65,18 @@ void main(){
 	
 	
 	printf("___________________________________________________\n\n");
-	
 
-	
-	
-	do{  
-		printf("Elija un num del personaje a mostrar (del 1 al %d): ", cant); /*Parte del Visor??? preguntar como debe ser el visor*/
-		scanf("%d",&nump); 
-	}while(nump<0 || nump>cant); 
+	/*probando funcion visor de personaje*/
+ 	visorPers(ptrpersonaje, cant);	
 		
-	printf("\nCaracteristicas del personaje num %d:\n", nump);
-	mostrarCarac(ptrpersonaje+(nump-1));
-
+ 	/*probando funcion pelea personajes*/
+ 	pelea(ptrpersonaje, cant);
 
 }
 
 
 //FUNCIONES CREADAS:
-/*para cargar caracteristicas*/
+//para cargar caracteristicas
 void cargaCarac(struct TPersonaje* ptrpers){
 	
 	ptrpers->Caracteristicas->velocidad=rand()%10+1; 
@@ -91,7 +87,7 @@ void cargaCarac(struct TPersonaje* ptrpers){
 
 }
 
-/*para mostrar caracteristicas*/
+//para mostrar caracteristicas
 void mostrarCarac(struct TPersonaje* ptrpers){
 	
 	printf("-Velocidad: %d\n",ptrpers->Caracteristicas->velocidad);	
@@ -101,6 +97,87 @@ void mostrarCarac(struct TPersonaje* ptrpers){
 	printf("-Armadura: %d\n",ptrpers->Caracteristicas->Armadura);
 	printf("\n");
 	
+}
+
+//Visor de personaje?? (Preguntar como debe ser el visor)
+void visorPers(struct TPersonaje* ptrpers, int cantpers){ 
+	int nump;
+	
+	do{  
+		printf("Elija un num del personaje a mostrar (del 1 al %d): ", cantpers); 
+		scanf("%d",&nump); 
+	}while(nump<1 || nump>cantpers); 
+
+	/*
+		Puede ir el codigo para mostrar DatosPersonales del personaje 
+
+	*/
+	printf("\nCaracteristicas del personaje num %d:\n", nump);
+	mostrarCarac(ptrpers+(nump-1));
+}
+
+
+//Funcion pelea 
+void pelea(struct TPersonaje* ptrpers, int cantpers){
+	struct TPersonaje* personajeA; struct TPersonaje* personajeB;
+	int PDpersA, EDpersA, VApersA, PDEFpersA, PDpersB, EDpersB, VApersB, PDEFpersB;
+	int nump,i,ataques=3, MDP=50000, danioataqA, danioataqB, saludpersA=100000, saludpersB=100000;
+
+	/*Seleccionando personajes*/
+	do{  
+		printf("Seleccione el personaje A (del 1 al %d): ", cantpers); 
+		scanf("%d",&nump); 
+	}while(nump<1 || nump>cantpers);
+
+	personajeA=ptrpers+(nump-1);
+	
+	do{  
+		printf("Seleccione el personaje B (del 1 al %d): ", cantpers); 
+		scanf("%d",&nump); 
+	}while(nump<1 || nump>cantpers);
+
+	personajeB=ptrpers+(nump-1);
+	
+	/*Valores de ataque*/
+	PDpersA=(personajeA->Caracteristicas->destreza)*(personajeA->Caracteristicas->fuerza)*(personajeA->Caracteristicas->Nivel);
+	
+	PDpersB=(personajeB->Caracteristicas->destreza)*(personajeB->Caracteristicas->fuerza)*(personajeB->Caracteristicas->Nivel);
+	
+	/*Valores de defensa*/
+	PDEFpersA=(personajeA->Caracteristicas->Armadura)*(personajeA->Caracteristicas->velocidad);
+	printf("%d\n", PDEFpersA);
+	PDEFpersB=(personajeB->Caracteristicas->Armadura)*(personajeB->Caracteristicas->velocidad);
+	printf("%d\n", PDEFpersB);
+	
+	/*Ataques realizados de cada personaje*/
+	printf("___________________________________________________\n\n");
+	for(i=0;i<ataques;i++){
+		printf("\nAtaque nro %d\n",i+1);
+
+		EDpersA=rand()/100+1; /*random en Efectividad del disparo personajeA*/
+		VApersA=PDpersA*EDpersA;
+		printf("Ataque personaje A %d\n", VApersA);
+
+		EDpersB=rand()/100+1; /*random en Efectividad del disparo personajeB*/
+		VApersB=PDpersB*EDpersB;
+		printf("Ataque personaje B %d\n", VApersB);
+		
+		/*Falta arreglar los valores y agregar mas codigo para optimizar el tema de cuando llegue a 0 la salud etc*/
+		danioataqB=(VApersB-PDEFpersA)*10; //Arreglar estos valores y agregar mas codigo para optimizar el tema de cuando llegue a 0 la salud etc
+		printf("Danio del ataque de personaje B a A:%d\n", danioataqB);
+		saludpersA=saludpersA-danioataqB;
+		printf("Salud personaje A:%d\n", saludpersA);
+
+		danioataqA=(VApersA-PDEFpersB)*10; //Arreglar estos valores y agregar mas codigo para optimizar el tema de cuando llegue a 0 la salud etc
+		printf("Danio del ataque de personaje A a B:%d\n", danioataqA);
+		saludpersB=saludpersB-danioataqA;
+		printf("Salud personaje B:%d\n", saludpersB);
+
+	}
+	
+	printf("\n");
+	printf("Salud personaje A:%d\n", saludpersA); 
+	printf("Salud personaje B:%d\n", saludpersB);
 }
 
 /*Notacion solo para tener en cuenta (*(ptrpers+i)) es (ptrpers+i)-> */
