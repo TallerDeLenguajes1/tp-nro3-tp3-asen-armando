@@ -91,7 +91,7 @@ void cargaCarac(struct TPersonaje* ptrpers){
 
 }
 
-/*para cargar caracteristicas*/
+/*para mostrar caracteristicas*/
 void mostrarCarac(struct TPersonaje* ptrpers){
 	
 	printf("-Velocidad: %d\n",ptrpers->Caracteristicas->velocidad);	
