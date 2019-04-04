@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 
 enum TRaza{Orco, Humano, Nomo, Enano, Elfo , Draenei};
-char Nombres[10][20]={"Bulbasaur", "Androide", "Militar", "Fotografo", "Sayayin","Matambre","Macaco","Judio"};
+char Nombres[10][20]={"Bulbasaur", "Androide", "Militar", "Fotografo", "Sayayin","Matambre","Ladron","Druidac"};
 char Apellidos[10][20]={" Furioso", " Sonrriente", " Malardo", " Amargado", " Salvaje"," Calvo"," Narcotraficante"," Gordo"};
 
 typedef struct{
@@ -32,6 +33,9 @@ void Cargar_Datos(TPersonaje* personajes,int cantpj);
 void Cargar_Caract (TPersonaje* personajes,int cantpj);
 void Mostrar_Personajes (TPersonaje* personajes,int cantpj);
 void Mostrar_Caract (TCaracteristicas* caract);
+void Eleccion_Personaje(TPersonaje* personajes);
+void Batalla (TPersonaje pj1,TPersonaje pj2);
+float Calculo_Dmg (TPersonaje pjA,TPersonaje pjD);
 
 int main(){
 	srand(time(NULL));
@@ -45,6 +49,7 @@ int main(){
 	Cargar_Datos(personajes,cantpj);
 	Cargar_Caract(personajes,cantpj);
 	Mostrar_Personajes(personajes,cantpj);
+	Eleccion_Personaje( personajes);
 
 	return 0;
 }
@@ -128,6 +133,73 @@ void Mostrar_Personajes(TPersonaje* personajes,int cantpj){
 void Mostrar_Caract (TCaracteristicas* caract){
 	printf("\tCARACTERISTICAS\n\n  Velocidad: %d\n  Destreza: %d\n  Fuerza: %d\n  Nivel: %d\n  Armadura: %d\n\n",caract->velocidad,caract->destreza,caract->fuerza,caract->Nivel,caract->Armadura);
 	return;
+}
+
+void Eleccion_Personaje(TPersonaje* personajes){
+	int pj1,pj2;
+	printf("Jugador 1 elija un personaje: ");
+	scanf("%d",&pj1);
+	printf("Jugador 2 elija un personaje: ");
+	scanf("%d",&pj2);
+	Batalla(personajes[pj1-1],personajes[pj2-1]);
+}
+
+void Batalla (TPersonaje pj1,TPersonaje pj2){
+	int i;
+	float danio;
+	printf("***    **\n");
+	printf("*  *  * *\n");
+	printf("***  *  *\n");
+	printf("*       *\n");
+	printf("*       *\n\n\n\n.");
+
+
+	printf("   *    *\n");
+	printf("   |____|\n");
+	printf("  ( 0 > 0)\n");
+	printf("  ( (  ) )  \n");
+	printf("   /     \\");
+	printf("\n\n%s\tVS\t%s\n",pj1.DatosPersonales->ApellidoNombre,pj2.DatosPersonales->ApellidoNombre);
+	for(i=1;i<=6;i++){
+		if(i%2==0){
+			printf("Turno PJ2 :presione una tecla para atacar\n");
+			getch();
+			danio = Calculo_Dmg(pj2,pj1);
+			pj1.DatosPersonales->Salud = pj1.DatosPersonales->Salud-danio;
+			printf("\ndanio causado = %.2f\nVida restante de pj1 = %.2f\n\n",danio,pj1.DatosPersonales->Salud);
+		}
+		else{
+			printf("\n\nTurno PJ1 :presione una tecla para atacar\n");
+			getch();
+			danio = Calculo_Dmg(pj1,pj2);
+			pj2.DatosPersonales->Salud = pj2.DatosPersonales->Salud-danio;
+			printf("\ndanio causado = %.2f\nVida restante de pj2 = %.2f\n\n",danio,pj2.DatosPersonales->Salud);
+		}
+	}
+	printf("%.2f-----%.2f\n",pj1.DatosPersonales->Salud,pj2.DatosPersonales->Salud);
+	if(pj2.DatosPersonales->Salud < pj1.DatosPersonales->Salud)
+		printf("\nPJ1 es el ganador.");
+	else if(pj1.DatosPersonales->Salud < pj2.DatosPersonales->Salud)
+			printf("\nPJ2 es el ganador.");
+		else
+			printf("\nEMPATE");
+	return;
+}
+
+float Calculo_Dmg (TPersonaje pjA,TPersonaje pjD){
+	srand(time(NULL));
+	float danio;
+	float PD,ED,VA,PDEF,MDP=50000;
+	PD = pjA.Caracteristicas->destreza*pjA.Caracteristicas->fuerza*pjA.Caracteristicas->Nivel;
+	ED = (float)(1+rand()%(101-1))/100;
+	VA = PD * ED;
+	PDEF = pjD.Caracteristicas->Armadura*pjD.Caracteristicas->velocidad;
+	danio = ((VA-PDEF)/MDP)*100;
+	printf("%.2f--%.2f--%.2f--%.2f--%.2f\n\n",PD,ED,VA,PDEF,danio);
+
+	if(danio<0)
+		danio = 0;
+	return danio;
 }
 
 void* Reservar_Memoria (int memoria){
