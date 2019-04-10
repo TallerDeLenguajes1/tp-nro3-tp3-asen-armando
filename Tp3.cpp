@@ -4,8 +4,11 @@
 #include <string.h>
 
 enum TRaza{Asesino, Tanque, Luchador, Mago, Apoyo};
-char Nombres[10][20]={"GALLETA ", "EMPANADA ", "SOPA ", "PIZAA ", "TORTILLA "};
-char Apellidos[10][20]={"ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
+
+//typedef enum{Asesino, Tanque, Luchador, Mago, Apoyo}TRaza;
+
+char Nombres[10][20]={"TORTA ", "ACELGA ", "GALLETA ", "EMPANADA ", "SOPA ", "PIZAA ", "TORTILLA "};
+char Apellidos[10][20]={"ILUMINADA", "ENOJADA","ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
 
 
 /***********************ESTRUCTURAS***********************/
@@ -48,6 +51,7 @@ void Versus();
 
 void main(){
 	highvideo();
+	srand(time(NULL));
 
 	Personaje* pj;
 	int cant, pj1, pj2;
@@ -76,21 +80,20 @@ void main(){
 	Batalla(pj[pj1-1],pj[pj2-1]);
 
 
-
-	// return 0;
 }
 
 
 /***********************FUNCIONES***********************/
 
 void CargarDatos(Personaje * pj, int i){
+	//srand(time(NULL));
 	Datos *data;
 	int rand_raza, rand_nombre, rand_apellido, rand_edad;
 
-	rand_raza=rand()%5;
-	rand_nombre=rand()%5;
-	rand_apellido=rand()%5;
-	rand_edad=rand()%300;
+	rand_raza=random(5);
+	rand_nombre=random(7);
+	rand_apellido=random(7);
+	rand_edad=random(300);
 
 	pj[i].DatosPersonales = (Datos*)malloc(sizeof(Datos));
 	data=pj[i].DatosPersonales;
@@ -104,14 +107,15 @@ void CargarDatos(Personaje * pj, int i){
 }
 
 void CargarCarcteristicas(Personaje * pj, int i){
+	//srand(time(NULL));
 	Caracteristicas *crt;
 	int rand_speed, rand_dexterity, rand_force, rand_level, rand_armor;
 
-	rand_speed=1+rand()%11;
-	rand_dexterity=1+rand()%6;
-	rand_force=1+rand()%10;
-	rand_level=1+rand()%10;
-	rand_armor=1+rand()%10;
+	rand_speed=1+random(10);
+	rand_dexterity=1+random(5);
+	rand_force=1+random(10);
+	rand_level=1+random(10);
+	rand_armor=1+random(10);
 
 	pj[i].Caract = (Caracteristicas*)malloc(sizeof(Caracteristicas));
 	crt=pj[i].Caract;
@@ -173,7 +177,7 @@ void Batalla(Personaje pj1, Personaje pj2){
 	{
 		PD = pj1.Caract->destreza*pj1.Caract->fuerza*pj1.Caract->nivel;
 		PDEF = pj2.Caract->armadura*pj2.Caract->velocidad;
-		ED = (float)(1+rand()%(101-1))/100;
+		ED = (float)(1+random(100))/100;
 		VA = PD * ED;
 		dmg = ((VA-PDEF)/MDP)*100;
 		if (dmg<0){dmg=0;}
@@ -188,7 +192,7 @@ void Batalla(Personaje pj1, Personaje pj2){
 	{
 		PD = pj2.Caract->destreza*pj2.Caract->fuerza*pj2.Caract->nivel;
 		PDEF = pj1.Caract->armadura*pj1.Caract->velocidad;
-		ED = (float)(1+rand()%(101-1))/100;
+		ED = (float)(1+random(100))/100;
 		VA = PD * ED;
 		dmg = ((VA-PDEF)/MDP)*100;
 		if (dmg<0){dmg=0;}
@@ -197,18 +201,27 @@ void Batalla(Personaje pj1, Personaje pj2){
 	}
 
 	if (s1>s2){
-		printf("\n\nGANA EL JUGADOR 1\n");
+		printf("\n\n\t\t  _____________________\n");
+		printf("\t\t |                     |\n");
+		printf("\t\t |  GANA EL JUGADOR 1  |");
+		printf("\n\t\t |_____________________|\n");
 	}else if(s2>s1){
-		printf("\n\nGANA EL JUGADOR 2\n");
+		printf("\n\n\t\t  _____________________\n");
+		printf("\t\t |                     |\n");
+		printf("\t\t |  GANA EL JUGADOR 2  |");
+		printf("\n\t\t |_____________________|\n");
 	}else{
-		printf("\n\nHUBO UN EMPATE\n");
+		printf("\n\n\t\t  _____________________\n");
+		printf("\t\t |                     |\n");
+		printf("\t\t |    HUBO UN EMPATE   |");
+		printf("\n\t\t |_____________________|\n");
 	}
 }
 
 
 void VisorPersonaje(Personaje * pj, int i){
 
-	printf("\n \t\t ================================\n");
+	printf("\n \t\t ================================");
 	printf("\r\n\t\t |\t%s \t\t\n",pj[i].DatosPersonales->ApellidoNombre);
 	switch(pj[i].DatosPersonales->raza){
 		case 0: printf("\r\t\t |\tRaza: Asesino \t\t|\n"); break;
@@ -224,7 +237,7 @@ void VisorPersonaje(Personaje * pj, int i){
 	printf("\r\t\t |\tFuerza: %i \t\t|\n", pj[i].Caract->fuerza);
 	printf("\r\t\t |\tNivel: %i \t\t|\n", pj[i].Caract->nivel);
 	printf("\r\t\t |\tArmadura: %i \t\t|\n", pj[i].Caract->armadura);
-	printf("\n\t\t ================================\n\n");
+	printf("\t\t ================================\n\n");
 
 	return;
 }
