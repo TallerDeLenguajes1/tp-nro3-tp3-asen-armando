@@ -4,7 +4,7 @@
 #include <time.h>
 
 enum TRaza{Orco, Humano, Mago, Enano, Elfo};
-char Nombres[6][10]={"ale","b","c","d","e"};
+char Nombres[6][10]={"ale","b","c","d","e"}; 
 char Apellidos[6][10]={"f","g","hormiga","i","j"};
 
 //Estructuras
@@ -38,7 +38,7 @@ void pelea(struct TPersonaje* ptrpers, int cantpers);
 //MAIN------------------------------------------------------------------------------------------------------
 void main(){
 	struct TPersonaje* ptrpersonaje; 
-	int cant,i,nump;
+	int cant,i;
 	
 	srand(time(NULL)); /*Para que genere las semillas de nuevos numeros aleatorios rand() al ejecutar de nuevo el programa*/
 
@@ -46,7 +46,6 @@ void main(){
 	scanf("%d", &cant); printf("\n");
 	/*Luego reservo memoria dinamica para tantos "cant" personajes*/
 	ptrpersonaje=(struct TPersonaje*)malloc(sizeof(struct TPersonaje)*cant); //sizeof() multiplico por cant 
-	
 	
 	for(i=0;i<cant;i++){
 		/*
@@ -154,11 +153,11 @@ void pelea(struct TPersonaje* ptrpers, int cantpers){
 	for(i=0;i<ataques;i++){
 		printf("\nAtaque nro %d\n",i+1);
 
-		EDpersA=rand()/100+1; /*random en Efectividad del disparo personajeA*/
+		EDpersA=rand()%100+1; /*random en Efectividad del disparo personajeA*/
 		VApersA=PDpersA*EDpersA;
 		printf("Ataque personaje A %d\n", VApersA);
 
-		EDpersB=rand()/100+1; /*random en Efectividad del disparo personajeB*/
+		EDpersB=rand()%100+1; /*random en Efectividad del disparo personajeB*/
 		VApersB=PDpersB*EDpersB;
 		printf("Ataque personaje B %d\n", VApersB);
 		
