@@ -8,6 +8,7 @@ enum TRaza{Asesino, Tanque, Luchador, Mago, Apoyo};
 //typedef enum{Asesino, Tanque, Luchador, Mago, Apoyo}TRaza;
 
 char Nombres[10][20]={"TORTA ", "ACELGA ", "GALLETA ", "EMPANADA ", "SOPA ", "PIZAA ", "TORTILLA "};
+//holasdfasdfasdfsadf xcfzxcfg
 char Apellidos[10][20]={"FURIOSA", "ENOJADA","ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
 
 
