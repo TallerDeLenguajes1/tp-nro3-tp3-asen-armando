@@ -8,7 +8,7 @@ enum TRaza{Asesino, Tanque, Luchador, Mago, Apoyo};
 //typedef enum{Asesino, Tanque, Luchador, Mago, Apoyo}TRaza;
 
 char Nombres[10][20]={"TORTA ", "ACELGA ", "GALLETA ", "EMPANADA ", "SOPA ", "PIZAA ", "TORTILLA "};
-char Apellidos[10][20]={"ILUMINADA", "ENOJADA","ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
+char Apellidos[10][20]={"FURIOSA", "ENOJADA","ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
 
 
 /***********************ESTRUCTURAS***********************/
@@ -30,10 +30,11 @@ typedef struct{
 }Caracteristicas;
 
 
-typedef struct{
+typedef struct nodo{
 	Datos *DatosPersonales;
 	Caracteristicas *Caract;
 	int aux;
+	nodo * siguiente;
 }Personaje;
 
 
