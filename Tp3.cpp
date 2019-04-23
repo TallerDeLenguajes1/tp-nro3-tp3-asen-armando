@@ -27,7 +27,14 @@ typedef struct{
 	TCaracteristicas * Caracteristicas;
 }TPersonaje;
 
+typedef struct Tlista{
+	TPersonaje PJ;
+	Tlista *siguiente;
+}Tlista;
 
+
+Tlista* Crear_Lista (Tlista* L);
+Tlista* Crear_Nodo (TPersonaje pj);
 void* Reservar_Memoria (int memoria);
 void Cargar_Datos(TPersonaje* personajes,int cantpj);
 void Cargar_Caract (TPersonaje* personajes,int cantpj);
@@ -40,7 +47,11 @@ float Calculo_Dmg (TPersonaje pjA,TPersonaje pjD);
 int main(){
 	srand(time(NULL));
 	int cantpj;
+
+	Tlista *lista;
+	lista = Crear_Lista(lista);
 	TPersonaje* personajes;
+
 
 	printf("INGRESAR LA CANTIDAD DE PERSONAJES: ");
 	scanf("%d",&cantpj);
@@ -54,8 +65,25 @@ int main(){
 	return 0;
 }
 
+Tlista* Crear_Lista (Tlista* L){
+	L = NULL;
+	return L;
+}
+
+Tlista* Crear_Nodo (TPersonaje pj){
+	Tlista* lista = (Tlista*)malloc(sizeof(Tlista));
+	lista->siguiente=NULL;
+	return lista;
+}
+
+void InsertarNodo(Tnodo * Start , int valor){
+    Tnodo * NuevoNodo = CrearNodo(valor);
+    NuevoNodo -> siguiente = Start;
+    Start  = NuevoNodo ;
+}
+
+
 void Cargar_Datos(TPersonaje* personajes,int cantpj){
-	srand(time(NULL));
 	int i,raza,nombre,apellido;
 	TDatos* datos;
 
@@ -80,7 +108,6 @@ void Cargar_Datos(TPersonaje* personajes,int cantpj){
 }
 
 void Cargar_Caract (TPersonaje* personajes,int cantpj){
-	srand(time(NULL));
 	TCaracteristicas* caract;
 	int i;
 
@@ -147,18 +174,6 @@ void Eleccion_Personaje(TPersonaje* personajes){
 void Batalla (TPersonaje pj1,TPersonaje pj2){
 	int i;
 	float danio;
-	printf("***    **\n");
-	printf("*  *  * *\n");
-	printf("***  *  *\n");
-	printf("*       *\n");
-	printf("*       *\n\n\n\n.");
-
-
-	printf("   *    *\n");
-	printf("   |____|\n");
-	printf("  ( 0 > 0)\n");
-	printf("  ( (  ) )  \n");
-	printf("   /     \\");
 	printf("\n\n%s\tVS\t%s\n",pj1.DatosPersonales->ApellidoNombre,pj2.DatosPersonales->ApellidoNombre);
 	for(i=1;i<=6;i++){
 		if(i%2==0){
@@ -187,7 +202,6 @@ void Batalla (TPersonaje pj1,TPersonaje pj2){
 }
 
 float Calculo_Dmg (TPersonaje pjA,TPersonaje pjD){
-	srand(time(NULL));
 	float danio;
 	float PD,ED,VA,PDEF,MDP=50000;
 	PD = pjA.Caracteristicas->destreza*pjA.Caracteristicas->fuerza*pjA.Caracteristicas->Nivel;
