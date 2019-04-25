@@ -69,7 +69,7 @@ void main(){
 		}
 	}while(opcion!=4);
 }
-
+//
 //FUNCIONES CREADAS:
 //para crear personajes 
 void creaPers(){  
@@ -249,7 +249,7 @@ void pelea(){
 			
 			danio[b]=((VA[a]-PDEF[b])/MDP)*100; 
 			if(danio[b]<0) danio[b]=0;
-			 
+
 			personaje[b]->DatosPersonales->Salud=(personaje[b]->DatosPersonales->Salud)-danio[b];
 			printf("P%d def:%.2f recibio un danio de %.2f / Salud P%d:%.2f\n", b+1, PDEF[b], danio[b],  b+1, personaje[b]->DatosPersonales->Salud);
 		} //FALTA REVISAR VALORES 
