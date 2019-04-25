@@ -26,39 +26,45 @@ typedef struct TCaracteristicas{
 typedef struct TPersonaje{
 	TDatos* DatosPersonales; 
 	TCaracteristicas* Caracteristicas;
+	struct TPersonaje* sgtePers;     //siguiente personaje
 }T_Personaje;
 
-int creaPers(T_Personaje** ppuntpers);
+T_Personaje *dirpripersL, *dirultpersL; //guia de direcciones del primer y ultimo personaje creado para la Lista
+
+void creaPers();
+int cantPers();
 void cargaDatos(T_Personaje* puntpers);
 void cargaCarac(T_Personaje* puntpers);
 void mostrarDatos(T_Personaje* puntpers);
 void mostrarCarac(T_Personaje* puntpers); 
-void visorPers(T_Personaje* puntpers, int cantpers);
-void pelea(T_Personaje* puntpers, int cantpers);
+void visorPers();
+void pelea();
 void dibupers(T_Personaje* puntpers);
 
 //MAIN------------------------------------------------------------------------------------------------------
-void main(){
-	T_Personaje* ptrpersonaje=NULL; 
-	int cant, opcion;
+void main(){ 
+	
+	dirpripersL=NULL; dirultpersL=NULL;
+	
+	int opcion;
 	srand(time(NULL)); /*Para que genere las semillas de nuevos numeros aleatorios rand() al ejecutar de nuevo el programa*/
 	
 	do{
 		printf("--INGRESE UN NUMERO COMO OPCION--\n");
-		printf("-1: Crear N Personajes nuevos\n-2: Visor de un Personaje\n-3: Pelea entre dos personajes\n-4: Salir\n");
+		printf("-1: Crear un Personaje nuevo\n-2: Visor de un Personaje\n-3: Pelea entre dos personajes\n-4: Salir\n");
 		scanf("%d",&opcion);
 		printf("\n");
 		switch(opcion){
 			case 1:
-				cant=creaPers(&ptrpersonaje); 
+				creaPers(); 
 				break;
 			case 2:
-				if(ptrpersonaje==NULL) printf("DENEGADO: no ha creado ningun personaje todavia!\n\n");
-				else{system("cls"); visorPers(ptrpersonaje, cant);}    
+				if(dirpripersL==NULL) printf("DENEGADO: no ha creado ningun personaje todavia!\n\n");
+				else{system("cls"); visorPers();}    
 				break;
 			case 3:
-				if(ptrpersonaje==NULL) printf("DENEGADO: no ha creado ningun personaje todavia!\n\n");
-				else{system("cls"); pelea(ptrpersonaje, cant);}
+				if(dirpripersL==NULL) printf("DENEGADO: no ha creado ningun personaje todavia!\n\n");
+				else{system("cls"); pelea();}
 				break;
 		}
 	}while(opcion!=4);
@@ -66,32 +72,44 @@ void main(){
 
 //FUNCIONES CREADAS:
 //para crear personajes 
-int creaPers(T_Personaje** ppuntpers){ //recibo la direccion del puntero a cargar (puntero a puntero), pasaje variable por referencia, no el valor 
-	int i, cant;
-	
-	if((*ppuntpers)!=NULL){
-		free(*ppuntpers); //libero memoria por si a estaba ocupada y estoy por crear nuevos personajes (funcionaria igual sin esto pero es para desocupar memoria anterior)
+void creaPers(){  
+	T_Personaje* nuevoPers;
+
+	nuevoPers=(T_Personaje*)malloc(sizeof(T_Personaje));
+
+	cargaDatos(nuevoPers);
+	cargaCarac(nuevoPers);
+	nuevoPers->sgtePers=NULL; //por ser el ultimo le pongo =NULL en su puntero sgtePers
+
+	//una vez cargados los datos, uno la direccion del nuevoPers a la lista
+	if(dirpripersL==NULL){
+		dirpripersL=nuevoPers; 
+		dirultpersL=nuevoPers;
+	}else{
+		dirultpersL->sgtePers=nuevoPers;
+		dirultpersL=nuevoPers;
 	}
 
-	printf("**INGRESE LA CANTIDAD DE PERSONAJES A CREAR: ");
-	scanf("%d", &cant); printf("\n");
-	
-	*ppuntpers=(T_Personaje*)malloc(sizeof(T_Personaje)*cant); //reservo memo para tal cantidad de personajes
-	
-	printf("**Creando personajes**\n\n");
-	for(i=0;i<cant;i++){
-		/*Llamo a las funciones para cargar datos y caracteristicas de cada personaje y mostrarlas*/
-		cargaDatos(*ppuntpers+i);
-		cargaCarac(*ppuntpers+i); 
-		
-		printf("--PERSONAJE NUM %d--\n", i+1);
-		mostrarDatos(*ppuntpers+i);
-		mostrarCarac(*ppuntpers+i);
-		printf("\n");
-	}
-	printf("**%d Personajes fueron creados con exito**\n--------------------------------------------\n\n", cant);
+	printf("**Nuevo personaje creado**\n");
+	mostrarDatos(nuevoPers);
+	mostrarCarac(nuevoPers);
 
-	return cant;
+	printf("\n**Hay en total %d personajes creados**\n", cantPers());
+
+	printf("\n\n");
+}
+
+//contador de personajes de la lista
+int cantPers(){
+	T_Personaje* puntpers=dirpripersL;
+	int cantpers=0;
+	
+	while(puntpers!=NULL){         
+		cantpers++;
+		puntpers=puntpers->sgtePers;
+	}
+
+	return cantpers;
 }
 
 //para cargar datos
@@ -161,39 +179,50 @@ void mostrarCarac(T_Personaje* puntpers){
 }
 
 //Visor de personaje
-void visorPers(T_Personaje* puntpers, int cantpers){ 
-	int nump;
+void visorPers(){ 
+	T_Personaje* puntpers=dirpripersL;
+	int nump, i;
 	
 	do{  
-		printf("**ELIJA EL NUMERO DEL PERSONAJE A MOSTRAR (del 1 al %d): ", cantpers); 
+		printf("**ELIJA EL NUMERO DEL PERSONAJE A MOSTRAR (del 1 al %d): ", cantPers()); 
 		scanf("%d",&nump); 
-	}while(nump<1 || nump>cantpers); 
+	}while(nump<1 || nump>cantPers()); 
+
+	for(i=1;i<nump;i++){
+		puntpers=puntpers->sgtePers;
+	}
 
 	printf("\n\n--PERSONAJE NUM %d--\n\n", nump);
-	dibupers(puntpers+(nump-1)); 
-	printf("\nDatos del personaje\n"); mostrarDatos(puntpers+(nump-1));
-	printf("\nCaracteristicas del personaje\n"); mostrarCarac(puntpers+(nump-1)); 
+	dibupers(puntpers); 
+	printf("\nDatos del personaje\n"); mostrarDatos(puntpers);
+	printf("\nCaracteristicas del personaje\n"); mostrarCarac(puntpers); 
 	printf("\n\n--------------------------------------------\n\n");
 }
 
 //Funcion pelea /*Tener en cuenta que la salud de cada personaje se actualiza por la direccion, por lo que si vuelvo a buscar el visor, su salud estara cambiada hasta que cree nuevos personajes
-void pelea(T_Personaje* puntpers, int cantpers){
+void pelea(){
+	T_Personaje* puntpers=dirpripersL;
 	T_Personaje* personaje[2]; //2 punteros para cada personaje 
-	int nump,i,j,a,b;
+	int nump,i,j,a,b,cont;
 	float PD[2], PDEF[2], ED[2], VA[2], danio[2];
 	float rondas=3, MDP=50000;
 
 	/*Seleccionando personajes*/
 	for(i=0;i<2;i++){
+
 		do{  
-			if(i==0) printf("**Seleccione el primer personaje (del 1 al %d): ", cantpers); 
-			else printf("**Seleccione el segundo personaje (del 1 al %d): ", cantpers); 
+			if(i==0) printf("**Seleccione el primer personaje (del 1 al %d): ", cantPers()); 
+			else printf("**Seleccione el segundo personaje (del 1 al %d): ", cantPers()); 
 			
 			scanf("%d",&nump); 
-		}while(nump<1 || nump>cantpers); //control de limite de numeros a elegir
+		}while(nump<1 || nump>cantPers()); //control de limite de numeros a elegir
 
-		personaje[i]=puntpers+(nump-1); //paso la direccion del personaje elegido
-		 
+		for(cont=1;cont<nump;cont++){
+			puntpers=puntpers->sgtePers;
+		}
+
+		personaje[i]=puntpers; //paso la direccion del personaje elegido
+		puntpers=dirpripersL;
 		/*cargo Poder de disparo y Poder de defensa de cada uno de los dos personajes*/
 		PD[i]=(personaje[i]->Caracteristicas->destreza)*(personaje[i]->Caracteristicas->fuerza)*(personaje[i]->Caracteristicas->Nivel);
 		PDEF[i]=(personaje[i]->Caracteristicas->Armadura)*(personaje[i]->Caracteristicas->velocidad);
