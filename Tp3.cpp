@@ -247,7 +247,9 @@ void pelea(){
 			VA[i]=PD[i]*ED[i]; /*Valor de ataque de cada personaje*/
 			printf("P%d efectividad de disparo:%.0f%% de %.2f = %.2f\n", i+1, (ED[i]*100), PD[i], VA[i]);
 			
-			danio[b]=((VA[a]-PDEF[b])/MDP)*100;  
+			danio[b]=((VA[a]-PDEF[b])/MDP)*100; 
+			if(danio[b]<0) danio[b]=0;
+			 
 			personaje[b]->DatosPersonales->Salud=(personaje[b]->DatosPersonales->Salud)-danio[b];
 			printf("P%d def:%.2f recibio un danio de %.2f / Salud P%d:%.2f\n", b+1, PDEF[b], danio[b],  b+1, personaje[b]->DatosPersonales->Salud);
 		} //FALTA REVISAR VALORES 
