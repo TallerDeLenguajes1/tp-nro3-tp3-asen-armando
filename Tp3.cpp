@@ -27,18 +27,21 @@ typedef struct{
 	TCaracteristicas * Caracteristicas;
 }TPersonaje;
 
-typedef struct Tlista{
+typedef struct Nodo{
 	TPersonaje PJ;
-	Tlista *siguiente;
-}Tlista;
+	Nodo *siguiente;
+}Nodo;
+
+typedef Nodo* Lista;
 
 
-Tlista* Crear_Lista (Tlista* L);
-Tlista* Crear_Nodo (TPersonaje pj);
+Lista Crear_Lista (Lista L);
+Nodo* Crear_Nodo (Lista lista);
+TPersonaje Crear_personaje();
 void* Reservar_Memoria (int memoria);
-void Cargar_Datos(TPersonaje* personajes,int cantpj);
-void Cargar_Caract (TPersonaje* personajes,int cantpj);
-void Mostrar_Personajes (TPersonaje* personajes,int cantpj);
+void Cargar_Datos(TPersonaje personaje);
+void Cargar_Caract (TPersonaje personaje);
+void Mostrar_Personaje(TPersonaje personaje);
 void Mostrar_Caract (TCaracteristicas* caract);
 void Eleccion_Personaje(TPersonaje* personajes);
 void Batalla (TPersonaje pj1,TPersonaje pj2);
@@ -46,51 +49,70 @@ float Calculo_Dmg (TPersonaje pjA,TPersonaje pjD);
 
 int main(){
 	srand(time(NULL));
-	int cantpj;
+	int cantpj,i;
 
-	Tlista *lista;
+	Lista lista;
+	// Tlista *lista;
 	lista = Crear_Lista(lista);
 	TPersonaje* personajes;
 
 
 	printf("INGRESAR LA CANTIDAD DE PERSONAJES: ");
 	scanf("%d",&cantpj);
-	personajes = (TPersonaje*)Reservar_Memoria(sizeof(TPersonaje)*cantpj);
-
-	Cargar_Datos(personajes,cantpj);
-	Cargar_Caract(personajes,cantpj);
-	Mostrar_Personajes(personajes,cantpj);
-	Eleccion_Personaje( personajes);
+	for(i=0;i<cantpj;i++){
+		lista = Crear_Nodo(lista);
+	}
+		Mostrar_Personaje(lista->PJ);
+	// Cargar_Datos(personajes,cantpj);
+	// Cargar_Caract(personajes,cantpj);
+	// Mostrar_Personajes(personajes,cantpj);
+	// Eleccion_Personaje( personajes);
 
 	return 0;
 }
 
-Tlista* Crear_Lista (Tlista* L){
-	L = NULL;
-	return L;
-}
-
-Tlista* Crear_Nodo (TPersonaje pj){
-	Tlista* lista = (Tlista*)malloc(sizeof(Tlista));
-	lista->siguiente=NULL;
+Lista Crear_Lista (Lista lista){
+	lista = NULL;
 	return lista;
 }
 
-void InsertarNodo(Tnodo * Start , int valor){
-    Tnodo * NuevoNodo = CrearNodo(valor);
-    NuevoNodo -> siguiente = Start;
-    Start  = NuevoNodo ;
+Nodo* Crear_Nodo (Lista lista){
+	Nodo *nuevonodo,*aux;
+	nuevonodo = (Nodo*)malloc(sizeof(Nodo));
+	nuevonodo->PJ = Crear_personaje();
+	nuevonodo->siguiente=NULL;
+	if(lista == NULL)
+		lista = nuevonodo;
+	else{
+		aux = lista;
+		while(aux->siguiente != NULL)
+			aux = aux->siguiente;
+		aux->siguiente = nuevonodo;
+	}
+	return lista;
 }
 
+TPersonaje Crear_personaje(){
+	TPersonaje PJ;
+	Cargar_Datos(PJ);
+	Cargar_Caract(PJ);
+	return PJ;
+}
 
-void Cargar_Datos(TPersonaje* personajes,int cantpj){
-	int i,raza,nombre,apellido;
+// void InsertarNodo(Tnodo * Start , int valor){
+//     Tnodo * NuevoNodo = CrearNodo(valor);
+//     NuevoNodo -> siguiente = Start;
+//     Start  = NuevoNodo ;
+// }
+
+
+void Cargar_Datos(TPersonaje personaje){
+	int raza,nombre,apellido;
 	TDatos* datos;
 
-	for(i=0;i<cantpj;i++){
 		//Reservo memoria para la estructura datos de cada personaje.
-		personajes[i].DatosPersonales = (TDatos*)Reservar_Memoria(sizeof(TDatos));
-		datos = personajes[i].DatosPersonales;
+		personaje.DatosPersonales = (TDatos*)Reservar_Memoria(sizeof(TDatos));
+		datos = personaje.DatosPersonales;
 
 		//valores aleatorios para los datos.
 		raza = rand()%6;
@@ -103,18 +125,15 @@ void Cargar_Datos(TPersonaje* personajes,int cantpj){
 		datos->ApellidoNombre = strcat (strcpy (datos->ApellidoNombre,Nombres[nombre]),Apellidos[apellido]);
 		datos->edad=rand()%301;
 		datos->Salud=100.0;
-	}
 	return;
 }
 
-void Cargar_Caract (TPersonaje* personajes,int cantpj){
+void Cargar_Caract (TPersonaje personaje){
 	TCaracteristicas* caract;
-	int i;
 
-	for(i=0;i<cantpj;i++){
 		//Reservo memoria para la estructura de caracteristicas de cada personaje.
-		personajes[i].Caracteristicas = (TCaracteristicas*)Reservar_Memoria(sizeof(TCaracteristicas));
-		caract = personajes[i].Caracteristicas;
+		personaje.Caracteristicas = (TCaracteristicas*)Reservar_Memoria(sizeof(TCaracteristicas));
+		caract = personaje.Caracteristicas;
 
 		//Asigno valores aleatorios a las caracteristicas.
 		caract->velocidad = 1+rand()%(11-1);
@@ -122,21 +141,18 @@ void Cargar_Caract (TPersonaje* personajes,int cantpj){
 		caract->fuerza = 1+rand()%(11-1);
 		caract->Nivel = 1+rand()%(11-1);
 		caract->Armadura = 1+rand()%(11-1);
-	}
 	return;
 }
 
-void Mostrar_Personajes(TPersonaje* personajes,int cantpj){
-	int i;
+void Mostrar_Personaje(TPersonaje personaje){
 	TDatos* datos;
 	TCaracteristicas* caract;
 	printf("PERSONAJES:\n\n");
 
-	for(i=0;i<cantpj;i++){
-		datos = personajes[i].DatosPersonales;
-		caract = personajes[i].Caracteristicas;
+		datos = personaje.DatosPersonales;
+		caract = personaje.Caracteristicas;
 		//Imprimo los datos de los personajes.
-		printf(" %d *********************************\n\n\t     DATOS\n\n",i+1);
+		printf("*********************************\n\n\t     DATOS\n\n");
 		switch (datos->Raza){
 			case 0 : printf("  Raza: Orco\n");
 					 break;
@@ -153,7 +169,6 @@ void Mostrar_Personajes(TPersonaje* personajes,int cantpj){
 		}
 		printf("  Apellido y nombre: %s\n  Edad: %d\n  Salud: %.1lf\n\n",datos->ApellidoNombre,datos->edad,datos->Salud);
 		Mostrar_Caract(caract);
-	}
 	return;
 }
 
