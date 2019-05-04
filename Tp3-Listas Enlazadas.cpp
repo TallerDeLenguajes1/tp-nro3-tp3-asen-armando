@@ -5,10 +5,7 @@
 
 enum TRaza{Asesino, Tanque, Luchador, Mago, Apoyo};
 
-//typedef enum{Asesino, Tanque, Luchador, Mago, Apoyo}TRaza;
-
 char Nombres[10][20]={"TORTA ", "ACELGA ", "GALLETA ", "EMPANADA ", "SOPA ", "PIZAA ", "TORTILLA "};
-//holasdfasdfasdfsadf xcfzxcfg
 char Apellidos[10][20]={"FURIOSA", "ENOJADA","ASESINA", "DESTRIPADORA", "DEL MAL", "ESQUIZOFRENICA", "PERONISTA"};
 
 
@@ -31,29 +28,37 @@ typedef struct{
 }Caracteristicas;
 
 
-struct nodo{
+typedef struct Tnodo{
 	Datos *DatosPersonales;
 	Caracteristicas *Caract;
 	int nro_pj;
-	struct nodo * next;
-};
-
-typedef struct nodo *lista;
-
+	Tnodo * next;
+}Tnodo;
 
 /***********************DECLARACION FUNCIONES***********************/
-lista Crear_lista();
-int Es_lista_vacia(lista l);
-lista Crear_Lista_Personajes(lista l, int cant);
-lista Insertar_elemento(lista l, int i);
+Tnodo * Crear_lista();
+int Es_lista_vacia(Tnodo * l);
+Tnodo * CrearNodo(int i);
+void InsertarNodo(Tnodo ** l,int nro_pj);
+
+
+
+
+
+
+Tnodo * EliminarNodo(Tnodo * l);
+Tnodo * QuitarPersonaje(Tnodo * l,int posicion);
+Tnodo * Crear_Lista_Personajes(Tnodo * l, int cant);
+
+Tnodo * Insertar_elemento(Tnodo * l, int i);
 Datos * CargarDatos(Datos * DP);
 Caracteristicas * CargarCarcteristicas(Caracteristicas * CP);
-void MostrarDatos(lista l);
-void MostrarCarcteristicas(lista l);
-void Mostrar_lista(lista l);
-void VisorPersonaje(lista l, int buscado);
+void MostrarDatos(Tnodo * l);
+void MostrarCarcteristicas(Tnodo * l);
+void Mostrar_lista(Tnodo * l);
+void VisorPersonaje(Tnodo * l, int buscado);
 void Versus();
-void Batalla(lista l, int pj1, int pj2);
+void Batalla(Tnodo * l, int pj1, int pj2);
 void Ataque(int pj1, int pj2);
 
 /***********************PROGRAMA PRINCIPAL***********************/
@@ -61,9 +66,9 @@ void Ataque(int pj1, int pj2);
 void main(){
 	highvideo();
 	srand(time(NULL));
-	int cant, pj1, pj2;
+	int cant, pj1, pj2,a_elminar;
 
-	lista l;
+	Tnodo * l;
 	l=Crear_lista();
 
 
@@ -71,10 +76,9 @@ void main(){
 	printf("*Ingrese la cantidad de personajes aleatorios a crear: ");
 	scanf("%i",&cant);
 
-	// for(int i=cant;i>0;i--){
-	// 	l=Insertar_elemento(l,i);
-	// }
-	l=Crear_Lista_Personajes(l,cant);
+	for(int i=cant;i>0;i--){
+		InsertarNodo(&l,i);
+	}
 
 	//************* MOSTRAR LISTA CON PERSONAJES ****************//
 	Mostrar_lista(l);
@@ -99,17 +103,17 @@ void main(){
 	printf("\n\n");
 
 	//********************** BATALLA **************************//
-	Batalla(l,pj1,pj2);
+	bBatalla(l,pj1,pj2);
 }
 
 
 /***********************FUNCIONES***********************/
 
-lista Crear_lista(){
+Tnodo* Crear_lista(){
 	return NULL;
 }
 
-int Es_lista_vacia(lista l){
+int Es_lista_vacia(Tnodo * l){
 	if(l==NULL){
 		return 1;
 	}else{
@@ -117,29 +121,25 @@ int Es_lista_vacia(lista l){
 	}
 }
 
-lista Crear_Lista_Personajes(lista l, int cant){
-	for(int i=cant;i>0;i--){
-		l=Insertar_elemento(l,i);
-	}
-	return l;
-}
-
-lista Insertar_elemento(lista l, int i){
+Tnodo * CrearNodo(int i){
 	Datos *DP;
 	Caracteristicas *CP;
-	struct nodo *nuevo;
 
-	nuevo=(struct nodo *) malloc(sizeof(struct nodo));
+	Tnodo * nuevo=(Tnodo *) malloc(sizeof(Tnodo));
 	nuevo->DatosPersonales= CargarDatos(DP);
 	nuevo->Caract= CargarCarcteristicas(CP);
 	nuevo->nro_pj=i;
-	nuevo->next=l;
-	l=nuevo;
-	return l;
+	nuevo->next=NULL;
+	return nuevo;
 }
 
+void InsertarNodo(Tnodo ** l,int nro_pj){
+	Tnodo * nuevo=CrearNodo(nro_pj);
+	nuevo->next=*l;
+	*l=nuevo;
+}
 
-void Mostrar_lista(lista l){
+void Mostrar_lista(Tnodo * l){
 	printf("\n\n*Personajes disponibles: \n");
 	if(Es_lista_vacia(l)!=1){
 		while(Es_lista_vacia(l) != 1){
@@ -193,7 +193,7 @@ Caracteristicas * CargarCarcteristicas(Caracteristicas *CP){
 }
 
 
-void MostrarDatos(lista l){
+void MostrarDatos(Tnodo * l){
 	printf(" %s\n",l->DatosPersonales->ApellidoNombre);
 	switch(l->DatosPersonales->raza){
 		case 0: printf("\tRaza: Asesino\n"); break;
@@ -208,7 +208,7 @@ void MostrarDatos(lista l){
 	return;
 }
 
-void MostrarCarcteristicas(lista l){
+void MostrarCarcteristicas(Tnodo * l){
 	printf("\tVelocidad: %i\n", l->Caract->velocidad);
 	printf("\tDestreza: %i\n", l->Caract->destreza);
 	printf("\tFuerza: %i\n", l->Caract->fuerza);
@@ -218,7 +218,7 @@ void MostrarCarcteristicas(lista l){
 	return;
 }
 
-void VisorPersonaje(lista l, int buscado){
+void VisorPersonaje(Tnodo * l, int buscado){
 
 	while(Es_lista_vacia(l) != 1){
 		if (l->nro_pj==buscado){
@@ -260,10 +260,10 @@ void Versus(){
 }
 
 
-void Batalla(lista l, int pj1, int pj2){
+void Batalla(Tnodo * l, int pj1, int pj2){
 	float dmg, s2, s1;
 	float PD,ED,VA,PDEF,MDP=5000;
-	lista l1,l2;
+	Tnodo *l1, *l2;
 
 	while(Es_lista_vacia(l) != 1){
 		if (l->nro_pj==pj1){
@@ -323,6 +323,7 @@ void Batalla(lista l, int pj1, int pj2){
 		printf("\n\t\t\t |_____________________|\n\n\n");
 	}
 }
+
 
 void Ataque(int pj1, int pj2){
 
